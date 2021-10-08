@@ -1,0 +1,20 @@
+name: Create Pending status on the latest commit
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  set-pr-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set PR status to pending
+        uses: niteoweb/pull_request_status_action@v1.0.0
+        with:
+          pr_number: ${{ github.event.pull_request.number }}
+          state: pending
+          context: review-app-test
+          repository: ${{ github.repository }}
+          description: Waiting for Review App to deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,42 @@
+name: Review App Test
+
+on:
+  repository_dispatch:
+    types: [review-app-test]
+
+jobs:
+  review-app-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      # STEP: 1
+      - name: Wait For HTTP Response of the Review App
+        uses: cygnetdigital/wait_for_response@v2.0.0
+        with:
+          url: ${{ github.event.client_payload.review_app_url }}
+          responseCode: '200,403'
+
+      # STEP: 2
+      - name: Set PR status to failure
+        if: ${{ failure() }}
+        uses: niteoweb/pull_request_status_action@v1.0.0
+        with:
+          pr_number: ${{ github.event.client_payload.pr_num }}
+          state: failure
+          context: review-app-test
+          repository: ${{ github.repository }}
+          description: Review App deployment has failed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # STEP: 3
+      - name: Set PR status to Success
+        uses: niteoweb/pull_request_status_action@v1.0.0
+        with:
+          pr_number: ${{ github.event.client_payload.pr_num }}
+          state: success
+          context: review-app-test
+          repository: ${{ github.repository }}
+          description: Review App deployment is successful
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
