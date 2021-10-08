@@ -1,1 +1,1 @@
-release: npm --prefix server run recreate-db:prod
+release: bash ./.heroku/release.sh

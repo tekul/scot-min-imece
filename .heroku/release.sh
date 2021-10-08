@@ -2,7 +2,15 @@
 
 set -e
 
-echo "Repo is $GITHUB_REPO".
+echo "******* Running release script *******"
+
+npm --prefix server run recreate-db:prod
+
+[ -z "$GITHUB_REPO" ] \
+    && ( echo "GITHUB_REPO is not set!"; exit 1 )
+
+[ -z "$GITHUB_TOKEN" ] \
+    && ( echo "GITHUB_TOKEN is not set!"; exit 1 )
 
 repo=$GITHUB_REPO
 token=$GITHUB_TOKEN
